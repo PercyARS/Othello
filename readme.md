@@ -1,4 +1,4 @@
-# Othello
+# Othello (Project From UBS China Interview)
 
 *Goal:* _Implement a playable Othello game_
 
