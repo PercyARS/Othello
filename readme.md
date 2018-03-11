@@ -1,5 +1,4 @@
-# Othello (Project From UBS China Interview)
-
+# Othello
 *Goal:* _Implement a playable Othello game_
 
 Two players 'O' and 'X'
