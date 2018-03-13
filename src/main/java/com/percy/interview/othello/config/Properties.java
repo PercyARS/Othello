@@ -34,7 +34,7 @@ public class Properties {
 		logger.debug("Getting {}", name);
 		String value = config.getString(name);
 		logger.debug("Received {} with value {}", name, value);
-		return config.getString(name);
+		return value;
 	}
 	
 	public static List<String> getStringListProptery(String name, List<String> defaultList){
@@ -48,5 +48,12 @@ public class Properties {
 		}
 		logger.debug("Received {} with value {}", name, Arrays.toString(list.toArray()));
 		return list;
+	}
+
+	public static String getStringProperty(String name, String defaultStr) {
+		logger.debug("Getting {} with default {}", name, defaultStr);
+		String value = config.getString(name, defaultStr);
+		logger.debug("Received {} with value {}", name, value);
+		return value;
 	}
 }

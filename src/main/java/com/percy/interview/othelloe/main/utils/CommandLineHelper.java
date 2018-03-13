@@ -17,20 +17,20 @@ import com.percy.interview.othello.game.coordinates.Coordinate;
 import com.percy.interview.othello.game.coordinates.manager.CoordManager;
 
 public class CommandLineHelper {
+	static final String NEW_LINE = System.lineSeparator();
 	static final String GREETINGS = "##########Welcome to Othello!##########";
-	static final String CURRENT_POSITION = "Current Position: ";
-	static final String CURRENT_SCORE = "Current Score: ";
+	static final String CURRENT_POSITION = NEW_LINE + "##########Current Situation##########";
+	static final String CURRENT_SCORE = "Score: ";
 	static final String PLAYER1_NAME_PROMPT = "Enter the name of first player: ";
 	static final String PLAYER2_NAME_PROMPT = "Enter the name of second player: ";
 	static final String VOID_RESPONSE = "Void response, Please try again: ";
 	static final String INVALID_MOVE = "Invalid move, try again: ";
 	static final String INVALID_COORD = "Invalid coordinate, try again: ";
 	static final String NO_VALID_MOVE = "No valid move available, other player's turn";
-	static final String GAME_OVER = "##########The Game Is Over##########\nNo further moves available";
-
+	static final String GAME_OVER = "##########The Game Is Over##########" + NEW_LINE + "No further moves available";
+	static final String BAR = "#####################################";
 	String PLAYER1_PROMPT;
 	String PLAYER2_PROMPT;
-	static final String NEW_LINE = System.lineSeparator();
 
 	
 	Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -58,8 +58,8 @@ public class CommandLineHelper {
 		writeToConsole(GREETINGS);
 		player1Name = readFromConsole(PLAYER1_NAME_PROMPT);
 		player2Name = readFromConsole(PLAYER2_NAME_PROMPT);
-		PLAYER1_PROMPT = String.format("Player %s move:", player1Name);
-		PLAYER2_PROMPT = String.format("Player %s move:", player2Name);
+		PLAYER1_PROMPT = String.format("Player %s (%s) move:", player1Name, Player.X);
+		PLAYER2_PROMPT = String.format("Player %s (%s) move:", player2Name, Player.O);
 		writeSituation();
 		logger.info("Player names entered {} and {}", player1Name, player2Name);
 	}
@@ -116,7 +116,7 @@ public class CommandLineHelper {
 		writeToConsole(CURRENT_POSITION);
 		writeToConsole(board + "");
 		String scoreString = score.toString().replace("PlayerX", player1Name).replaceAll("PlayerO", player2Name);
-		writeToConsole(CURRENT_SCORE + scoreString);
+		writeToConsole(CURRENT_SCORE + scoreString + NEW_LINE + BAR + NEW_LINE);
 	}
 	
 	/*
@@ -153,25 +153,30 @@ public class CommandLineHelper {
 	}
 	
 	public void begin() {
-		while (!logic.updateState()) {
+		//Efficiently update each player's available moves
+		while (logic.updateStateFalseIfOver()) {
+			//Get all the available moves for X
 			List<Coordinate> xValidMoves = logic.getAvailableMoves(Player.X);
 			if (xValidMoves.size() > 0) {
 				String player1Move = readFromConsole(PLAYER1_PROMPT);
 				Coordinate xMove = getValidateCoord(player1Move, xValidMoves);
+				logger.info("X moved to {}", xMove);
 				logic.evaluateMove(Player.X, xMove);
 				writeSituation();
 			}else {
+				logger.info("No valid move for X, skip");
 				writeToConsole(NO_VALID_MOVE);
 			}
+			//Get all the available moves for O
 			List<Coordinate> oValidMoves = logic.getAvailableMoves(Player.O);
 			if (oValidMoves.size() > 0) {
 				String player2Move = readFromConsole(PLAYER2_PROMPT);
 				Coordinate oMove = getValidateCoord(player2Move, oValidMoves);
+				logger.info("O moved to {}", oMove);
 				logic.evaluateMove(Player.O, oMove);
 				writeSituation();
 			}else {
-				if (logic.updateState())
-					break;
+				logger.info("No valid move for O, skip");
 				writeToConsole(NO_VALID_MOVE);
 			}
 		}

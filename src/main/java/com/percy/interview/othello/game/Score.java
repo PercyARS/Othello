@@ -37,7 +37,7 @@ public class Score {
 	
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("[PlayerX - ").append(xScore.get()).append(",PlayerO - ").append(oScore.get()).append("]");
+		sb.append("[PlayerX - ").append(xScore.get()).append(", PlayerO - ").append(oScore.get()).append("]");
 		return sb.toString();
 	}
 	

@@ -3,20 +3,26 @@ package com.percy.interview.othello.game;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.percy.interview.othello.config.Properties;
 import com.percy.interview.othello.game.coordinates.Coordinate;
 
 public class Board {
 	final int size;
+	final int totalPieces;
 	final char[] xAxisNames;
 	final char[] yAxisName;
 	final short[][] contents;
 	static final short EMPTY = 0;
 	static final short xFilled = 1;
 	static final short oFilled = 2;
+	static final String LEFT_PIECE_SEPARATOR = Properties.getStringProperty("board.left.separator", "[");
+	static final String RIGHT_PIECE_SEPARATOR = Properties.getStringProperty("board.right.separator", "]");
+
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public Board(int size, char[] xAxisNames, char[] yAxisName) {
 		this.size = size;
+		this.totalPieces = size * size;
 		this.contents = new short[size][size];
 		this.xAxisNames = xAxisNames;
 		this.yAxisName = yAxisName;
@@ -25,6 +31,11 @@ public class Board {
 	public int getSize() {
 		return size;
 	}
+	
+	public int getTotal() {
+		return totalPieces;
+	}
+	
 	/*
 	 * Fill without regard to current value
 	 */
@@ -39,7 +50,7 @@ public class Board {
 			contents[x][y] = xFilled;
 			break;
 		}
-		logger.trace("Coord {} taken by {}", coord, player);
+		logger.debug("Coord {} taken by {}", coord, player);
 	}
 	
 	public short checkFill(Coordinate coord) {
@@ -68,7 +79,7 @@ public class Board {
         for (int i = 0; i < size; ++i) {
         		printableBoard.append(yAxisName[i]).append(" ");
         		for (int j = 0; j < size; ++j) {
-            		printableBoard.append("[").append(pieceStrValue(contents[j][i])).append("]");
+            		printableBoard.append(LEFT_PIECE_SEPARATOR).append(pieceStrValue(contents[j][i])).append(RIGHT_PIECE_SEPARATOR);
         		}
         		printableBoard.append(System.lineSeparator());
         		if (i == size - 1) {

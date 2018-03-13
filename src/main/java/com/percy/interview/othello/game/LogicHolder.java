@@ -96,28 +96,29 @@ public class LogicHolder {
 	}
 	
 	/*
-	 * Update the moves for each player
+	 * Update the available moves for each player
 	 * and return false if game is over
 	 */
-	public boolean updateState() {
+	public boolean updateStateFalseIfOver() {
 		int xScore = score.getXScore();
 		int oScore = score.getOScore();
-		if (xScore + oScore == board.getSize()) {
+		//all pieces being placed
+		if (xScore + oScore == board.getTotal()) {
 			logger.info("Board Full, Game Over");
-			return true;
+			return false;
 		}
 		latestXAvailaleMoves = singularSearch(Player.X);
 		if (latestXAvailaleMoves.size() > 0) {
 			//flush o moves if x is going to move
 			latestOAvailaleMoves = null;
-			return false;
+			return true;
 		}
-		//maintain the latest since x is not going to move
+		//maintain the latest o available moves since x is not going to move
 		latestOAvailaleMoves = singularSearch(Player.O);
 		if (latestOAvailaleMoves.size() == 0) {
-			return true;
-		}else {
 			return false;
+		}else {
+			return true;
 		}
 }
 
@@ -139,7 +140,7 @@ public class LogicHolder {
 				//only look for empty spot
 				if (board.checkFill(coord) == Board.EMPTY) {
 					if (searcher.isValidMove(i, j, player, false)) {
-						logger.info("Valid location {} found for {}", coord, player);
+						logger.debug("Valid location {} found for {}", coord, player);
 						moves.add(coord);
 					}
 				}
@@ -170,7 +171,7 @@ public class LogicHolder {
 		if (availableMoves == null) {
 			availableMoves = singularSearch(player);
 		}
-		logger.debug("Found all the available moves {}", Arrays.toString(availableMoves.toArray()));
+		logger.info("Found all the available {} moves {}", player, Arrays.toString(availableMoves.toArray()));
 		return availableMoves;
 	}
 

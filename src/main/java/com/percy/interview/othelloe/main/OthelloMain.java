@@ -25,7 +25,6 @@ public class OthelloMain
     	static List<Coordinate> getCoordinates(List<String> strList, CoordManager manager){
         		List<Coordinate> coordList = new ArrayList<Coordinate>();
         		for (String coordStr:strList) {
-        			logger.info("{}", coordStr);
         			Coordinate coord = manager.getCoordinate(coordStr);
         			if (coord == null) {
         				throw new RuntimeException("Invalid Initial Coordinate: " + coordStr);
